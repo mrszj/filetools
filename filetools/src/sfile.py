@@ -30,17 +30,16 @@ def get_file_size(filename):
     return (filesize)
 def printPath(level, path):
     global allFileNum
+    allFileNum = 0
     dirList = []
     fileList = []
     files = os.listdir(path)
     dirList.append(str(level))
     for f in files:
-        if(os.path.isdir(path + '/' + f)):
             if(f[0] == '.'):
                 pass
             else:
                 dirList.append(f)
-        if(os.path.isfile(path + '/' + f)):
             fileList.append(f)
     i_dl = 0
     for dl in dirList:
@@ -48,7 +47,6 @@ def printPath(level, path):
             i_dl = i_dl + 1
         else:
             print('-' * (int(dirList[0])), dl)
-            printPath((int(dirList[0]) + 1), path + '/' + dl)
     for fl in fileList:
         print('-' * (int(dirList[0])), fl)
         allFileNum = allFileNum + 1
