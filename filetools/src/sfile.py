@@ -29,17 +29,18 @@ def get_file_size(filename):
     filesize = os.path.getsize(filename)  # 如果是文件，则获取相应文件的大小
     return (filesize)
 def printPath(level, path):
-    global allFileNum
     allFileNum = 0
     dirList = []
     fileList = []
     files = os.listdir(path)
     dirList.append(str(level))
     for f in files:
+        if(os.path.isdir(path + os.path.sep + f)):
             if(f[0] == '.'):
                 pass
             else:
                 dirList.append(f)
+        if(os.path.isfile(path + os.path.sep + f)):
             fileList.append(f)
     i_dl = 0
     for dl in dirList:
@@ -47,13 +48,13 @@ def printPath(level, path):
             i_dl = i_dl + 1
         else:
             print('-' * (int(dirList[0])), dl)
+            printPath((int(dirList[0]) + 1), path + os.path.sep + dl)
     for fl in fileList:
         print('-' * (int(dirList[0])), fl)
         allFileNum = allFileNum + 1
 
 
 if __name__ == '__main__':
-    print(os.name)
     print(os.path.sep)
     path = sys.argv[1]
     path_dir = get_dir(path)
@@ -62,3 +63,5 @@ if __name__ == '__main__':
 #     printPath(1,'d:\ftp')
 #     print('总文件数=',allFileNum)
 #list1 = [11,33,55,66]
+    printPath(1,'D:\Program Files')
+
