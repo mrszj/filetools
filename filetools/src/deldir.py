@@ -5,7 +5,9 @@ Created on 2018年9月4日
 @version: 1.0.0
 useage:
 D:\ssdftp\stability>python deldir.py D:\ssdftp\iis\ftp1 3370 13312284892 ".SUTMP
-" "d:\ssdftp\stability\deldir.log"
+" "d:\ssdftp\stability\deldir.log" 1800
+每隔1800秒删除D:\ssdftp\iis\ftp1目录下，大小为13312284892字节，文件数量为3370个的子文件夹，忽略.SUTMP文件，记录日志
+到d:\ssdftp\stability\deldir.log
 '''
 import os
 import shutil
@@ -39,11 +41,12 @@ def getDirNumSize(dirPath,dirfilenum=0,dirsize=0,suffix=""):
         return False
 
 if __name__ == '__main__':
-    path = sys.argv[1]
-    dirfilenum = sys.argv[2]
-    dirsize = sys.argv[3]
-    filesuffix = sys.argv[4]
-    logfile = sys.argv[5]
+    path = sys.argv[1]  #ftp目录全路径，例如 D:\ssdftp\iis\ftp1
+    dirfilenum = sys.argv[2]    #目录下文件夹包含文件数量
+    dirsize = sys.argv[3]   #目录大小
+    filesuffix = sys.argv[4]    #忽略的后缀名，例如 .SUTMP
+    logfile = sys.argv[5]   #日志文件路径，例如 "d:\ssdftp\stability\deldir.log"
+    sleeptime = sys.argv[6] #每个循环sleep时间
 #     path = r"D:\ftp\ftp1"
 #     dirfilenum = 4
 #     dirsize = 225743
