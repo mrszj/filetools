@@ -65,5 +65,5 @@ if __name__ == '__main__':
                     print("写入日志成功")
                 except Exception as e:
                     print(e)
-        print("SLEEP 1800 秒")
-        sleep(1800)
+        print("SLEEPING %s 秒" % sleeptime)
+        sleep(sleeptime)
