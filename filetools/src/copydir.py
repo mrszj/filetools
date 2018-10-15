@@ -23,7 +23,7 @@ def get_dir(path):
     fileList = os.listdir(path)
     for filename in fileList:
         pathTmp = os.path.join(path,filename)
-        if os.path.isrcdir(pathTmp):
+        if os.path.isdir(pathTmp):
             list2.append(pathTmp)
     return (list2)
 
