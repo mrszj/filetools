@@ -13,6 +13,9 @@ import os
 import shutil
 import sys
 from time import sleep
+from builtins import str
+import datetime
+import string
 
 #获取目录下所有文件夹
 def get_dir(path):
@@ -20,7 +23,7 @@ def get_dir(path):
     fileList = os.listdir(path)
     for filename in fileList:
         pathTmp = os.path.join(path,filename)
-        if os.path.isdir(pathTmp):
+        if os.path.isrcdir(pathTmp):
             list2.append(pathTmp)
     return (list2)
 
@@ -34,68 +37,74 @@ def getDirNumSize(dirPath,dirfilenum=0,dirsize=0,suffix=""):
                 dirsize_tmp += os.path.getsize(os.path.join(root, f))
                 dirfilenum_tmp += 1
     print("==================")
-    print("文件夹%s\n实际文件数量:%s\n期望文件数量:%s\n实际大小:%s\n期望大小:%s" %(dirPath,dirfilenum_tmp,dirfilenum,dirsize_tmp,dirsize))
-    if int(dirfilenum) == int(dirfilenum_tmp) and int(dirsize) == int(dirsize_tmp) :
+    print("文件夹%s\n实际文件数量:%s\n期望文件数量:%s" %(dirPath,dirfilenum_tmp,dirfilenum))
+    if int(dirfilenum) == int(dirfilenum_tmp):
         return True
     else:
         return False
+    
+def copyDir(srcdir,destdir,newdirname):
+    if (not os.path.exists(srcdir)) or (not os.path.exists(destdir)):
+        print("目录不存在,脚本退出")
+        sys.exit(1)
+    try:
+        shutil.copytree(srcdir,destdir + os.path.sep + str(newdirname))
+    except Exception as ex:
+        print("拷贝出错:"+str(ex))
+        return False
+    print("copy "+ destdir + os.path.sep + str(newdirname) + " 成功 ")
+    return True
+def delEmpty(destdir):
+    list1 = []
+    fileList = os.listdir(destdir)
+    for filename in fileList:
+        pathTmp = os.path.join(destdir,filename)
+        if os.path.isdir(pathTmp):
+            list1.append(pathTmp)
+    for d in list1:
+            if (getDirNumSize(d)):
+                print("准备删除 "+d)
+                shutil.rmtree(d)
+                print("删除完毕 "+d)
+            else:
+                return (False)
+    return (True)
 
 if __name__ == '__main__':
-    spath = sys.argv[1] #待拷贝的文件夹，例如 D:\ssdftp\stability\mu
-    dpath = sys.argv[2] #目的路径，一般为ftp目录，例如 D:\ssdftp\iis\ftp1
-    logfile = sys.argv[3]   #日志文件路径，例如 "d:\ssdftp\stability\copydir.log"
-    sleeptime = sys.argv[4] #每个循环sleep时间（秒），sleep后判断目的路径是否为空，为空删除空文件夹继续下一轮拷贝，不为空sleep 30秒继续判断
-    dirnum = sys.argv[5]    #每个循环拷贝文件夹数量
-#     path = r"D:\ftp\ftp1"
-#     dirfilenum = 4
-#     dirsize = 225743
-#     filesuffix = r".SUTMP"
-#     logfile = r"D:\ftp\ftp1\deldirlog.txt"
-    while 1 == 1:
-        path_dirs = get_dir(path)
-        for d in path_dirs:
-            if (getDirNumSize(d,dirfilenum,dirsize,filesuffix)):
-                try:
-                    print("准备删除 "+d)
-                    shutil.rmtree(d)
-                    print("删除完毕 "+d)
-                    with open(logfile,'a') as f:
-                        f.write(d+"\n")
-                    print("写入日志成功")
-                except Exception as e:
-                    print(e)
-        print("SLEEPING %s 秒" % sleeptime)
-        sleep(sleeptime)
-
-@echo off
-set j=1
-::set q=1
-::set dirPath=D:\ssdftp\iis\ftp1
-setlocal enabledelayedexpansion
-:bg
-echo "开始成文件"
-echo %date%%time% >> D:\ssdftp\stability\c.log
-for /L %%i in (1,1,5) do (xcopy D:\ssdftp\stability\mu  D:\ssdftp\iis\ftp1\%j%_%%i /S /E /I /H /Y /Q)
-echo "生成完毕"
-@ping 127.0.0.1 -n 1200 -w 1000 >nul
-:kong
-echo "等待传输"
-for /f "delims=" %%x in ('dir /ad /w /b "D:\ssdftp\iis\ftp1"') do (
-    echo %%x
-    for /f "tokens=3 delims= " %%k in ('dir /s /a /-c "D:\ssdftp\iis\ftp1\%%x" ^|findstr 个文件') do (
-    set z=%%k)
-    echo "fdsafds!z!
-    if !z! == 0 (rd /s /q "D:\ssdftp\iis\ftp1\%%x" && echo del "D:\ssdftp\iis\ftp1\%%x" >>D:\ssdftp\stability\c.log  )
-)
-for /f "tokens=3 delims= " %%y in ('dir /s /a /-c "D:\ssdftp\iis\ftp1" ^|findstr 个文件') do (
-    set zz=%%y)
-echo "fdsafds!zz!
-if !zz! == 0 ( goto con )
-
-goto loop
-:con
-echo "传输完成"
-echo %j% >> D:\ssdftp\stability\c.log
-set /a j+=1
-goto bg
-
+#     srcdir = sys.argv[1] #待拷贝的文件夹，例如 D:\ssdftp\stability\mu
+#     destdir = sys.argv[2] #目的路径，一般为ftp目录，例如 D:\ssdftp\iis\ftp1
+#     logfile = sys.argv[3]   #日志文件路径，例如 "d:\ssdftp\stability\copydir.log"
+#     sleeptime = sys.argv[4] #每个循环sleep时间（秒），sleep后判断目的路径是否为空，为空删除空文件夹继续下一轮拷贝，不为空sleep 30秒继续判断
+#     dirnum = sys.argv[5]    #每个循环拷贝文件夹数量
+    srcdir = r"f:\f\1"
+    destdir = r"f:\ff"
+    sleeptime = 10
+    dirnum = 3
+    dirprefix = ""
+    logfile = r"f:\copydirlog.txt"
+    i = 1
+    with open(logfile,'a') as f:
+        time1 = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        f.write(str(time1)+"\n")
+    while i > 0:
+        #拷贝文件
+        print(i % dirnum)
+        print("开始本轮拷贝") 
+        r = copyDir(srcdir,destdir,i)
+        if r:
+            with open(logfile,'a') as f:
+                f.write(str(i)+"\n")
+        else:
+            print("拷贝失败")
+            sys.exit(1)
+        if i % dirnum == 0 :
+            print("本轮拷贝完成")
+            sleep(sleeptime)
+            #判断目录是否为空,为空删除空文件夹继续下轮拷贝
+            while not delEmpty(destdir):
+                print("目录没有传输完成,等待20秒")
+                sleep(30)
+            with open(logfile,'a') as f:
+                time2 = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+                f.write(str(time1)+"\n")
+        i += 1
