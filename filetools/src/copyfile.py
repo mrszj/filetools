@@ -65,12 +65,14 @@ if __name__ == '__main__':
 #     sleeptime = 10
 #     filenum = 5
     fileprefix = "fgapfile"
-    file_seq = 1
+    if (len(sys.argv) != 6):
+        print("参数数量不正确，脚本退出")
+        sys.exit(1)
     if (not os.path.isfile(srcfile)) or (not os.path.exists(destdir)):
         print("文件或者路径不存在,脚本退出")
         sys.exit(1)
     writeLog(logfile, "开始拷贝" + srcfile +"到" + destdir +"目录")
-    
+    file_seq = 1
     while file_seq > 0:
         #拷贝文件
 #        print("开始拷贝")

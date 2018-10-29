@@ -80,6 +80,7 @@ if __name__ == '__main__':
 #     ignore_filesuffixs = ignore_filesuffixs.split(':')
     if (len(sys.argv) != 6):
         print("参数数量不正确，脚本退出")
+        sys.exit(1)
     while 1 == 1:
         path_files = get_file_list(monpath, flag, ignore_filesuffixs)
         for file in path_files:

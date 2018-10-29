@@ -79,6 +79,9 @@ if __name__ == '__main__':
     sleeptime = sys.argv[6]  # 每个循环sleep时间
     ignore_filesuffixs = ignore_filesuffixs.split(':')
     print(ignore_filesuffixs)
+    if (len(sys.argv) != 7):
+        print("参数数量不正确，脚本退出")
+        sys.exit(1)
 #     path = r"D:\ftp\ftp1"
 #     dirfilenum = 4
 #     dirsize = 225743

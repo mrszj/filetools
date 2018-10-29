@@ -87,6 +87,7 @@ def writeLog(logfile,content):
             f.write(str(time2) + " " + str(content)+"\n")
     except Exception as e:
         print(e)
+        
 if __name__ == '__main__':
     srcdir = sys.argv[1] #待拷贝的文件夹，例如 D:\ssdftp\stability\mu
     destdir = sys.argv[2] #目的路径，一般为ftp目录，例如 D:\ssdftp\iis\ftp1
@@ -99,6 +100,9 @@ if __name__ == '__main__':
 #     dirnum = 2
 #     dirprefix = ""
 #     logdir = r"d:\ftp\ftp1"
+    if (len(sys.argv) != 6):
+        print("参数数量不正确，脚本退出")
+        sys.exit(1)
     i = 1
     writeLog(logfile, "开始拷贝" + srcdir +"到" + destdir +"目录")
     while i > 0:
