@@ -1,12 +1,13 @@
 # -*- coding:utf-8 -*-
 '''
-Created on 2018年9月4日
-@author: songzj
-@version: 1.0.0
+Created on 2019年2月20日
+@author: songzhaojun
+@version: 1.0.1
 useage:
-python D:\ssdftp\stability\copydir.py D:\ssdftp\stability\source\10g.txt D:\ssdftp\iis\ftp1 d:\ssdftp\stability\source\logs\task1.log 3000 5
-每隔3000秒拷贝D:\ssdftp\stability\source\10g.txt文件5次到D:\ssdftp\iis\ftp1目录下，传输完成后，ftp1目录下文件数量为空时，继续下轮拷贝，记录日志
-到d:\ssdftp\stability\source\logs\task1.log_日期.log文件中
+python D:\ssdftp\stability\copyfile.py D:\ssdftp\stability\source\10g.txt D:\ssdftp\iis\ftp1 d:\ssdftp\stability\source\logs\task1.log 3000 5 fgapfile_
+每隔3000秒拷贝D:\ssdftp\stability\source\10g.txt文件5次到D:\ssdftp\iis\ftp1目录下,命名为fgapfile_1.txt...fgapfile_5.txt,记录日志
+到d:\ssdftp\stability\source\logs\task1.log_日期.log文件中,等待3000秒继续下轮拷贝.
+参数6(文件前缀)为可选项,如不填写默认为“fgapfile_”
 '''
 import os
 import shutil
@@ -18,7 +19,8 @@ import datetime
 def copy_file(srcfile,destdir,new_filename):
     full_name = destdir + os.path.sep + new_filename
     try:
-        shutil.copy2(srcfile,full_name)
+        shutil.copy(srcfile,full_name)
+		#shutil.copy2(srcfile,full_name)
     except Exception as ex:
         print("拷贝出错:"+str(ex))
         return False
@@ -53,21 +55,25 @@ def writeLog(logfile,content):
         
 if __name__ == '__main__':
     
+    if (len(sys.argv) < 6):
+        print("参数数量不正确，脚本退出")
+        sys.exit(1)    
     srcfile = sys.argv[1] #待拷贝的文件，例如 D:\ssdftp\stability\source\1K.txt
     destdir = sys.argv[2] #目的路径，一般为ftp目录，例如 D:\ssdftp\iis\ftp1
     logfile = sys.argv[3]   #日志文件存放路径，例如 "d:\ssdftp\stability\source\logs\task1.log"
     sleeptime = sys.argv[4] #每个循环sleep时间（秒），sleep后判断目的路径文件数量是否为0，为0继续下一轮拷贝，不为0sleep 1秒继续判断
     filenum = sys.argv[5]    #每个循环拷贝文件数量
+    if (len(sys.argv) == 7):
+        fileprefix = sys.argv[6]
+    else:
+        fileprefix = "fgapfile_"    #生成文件时的文件名前缀
 
 #     srcfile = r"E:\测试部\光闸稳定性测试脚本\source\stability\source\50M.txt"
 #     destdir = r"D:\ssdftp\iis\ftp1"
 #     logfile = r"E:\测试部\光闸稳定性测试脚本\source\stability\source\logs\task1.log"
 #     sleeptime = 10
 #     filenum = 5
-    fileprefix = "fgapfile"
-    if (len(sys.argv) != 6):
-        print("参数数量不正确，脚本退出")
-        sys.exit(1)
+
     if (not os.path.isfile(srcfile)) or (not os.path.exists(destdir)):
         print("文件或者路径不存在,脚本退出")
         sys.exit(1)
@@ -91,7 +97,7 @@ if __name__ == '__main__':
             #判断目录是否为空,为空继续下轮拷贝
             while not isempty(destdir,fileprefix):
                 print("目录没有传输完成,等待2秒")
-                sleep(2)
+                sleep(5)
             writeLog(logfile, "本轮文件传输完成")
         file_seq += 1
         
